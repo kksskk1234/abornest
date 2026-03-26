@@ -16,6 +16,9 @@
             --border-color: #cbd5e1;
             --text-main: #0f172a;
             --text-muted: #475569;
+            /* 라벨 크기 변수 */
+            --label-width: 100mm;
+            --label-height: auto;
         }
 
         * {
@@ -139,8 +142,8 @@
 
         /* [사진 기반 완벽 재현] 세로형 라벨 디자인 */
         .label-container {
-            width: 100mm;
-            min-height: 120mm;
+            width: var(--label-width);
+            min-height: var(--label-height);
             background: white;
             padding: 10mm 8mm; 
             box-shadow: 0 30px 60px rgba(0,0,0,0.15);
@@ -300,6 +303,24 @@
     <div class="editor shadow-lg">
         <h1><span>🔖</span> 라벨 메이커</h1>
         
+        <!-- 라벨 규격 설정 추가 -->
+        <div class="form-group" style="background: #f1f5f9; padding: 12px; border-radius: 10px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+            <label style="color: var(--primary-color); font-size: 0.85rem; margin-bottom: 8px;">📏 라벨 규격 설정 (mm)</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div style="flex: 1;">
+                    <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">가로(W)</span>
+                    <input type="number" id="inputWidth" value="100" min="10" max="300" oninput="updateLabel()" style="margin-top:2px; padding: 5px 8px;">
+                </div>
+                <div style="flex: 1;">
+                    <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">세로(H)</span>
+                    <input type="number" id="inputHeight" value="120" min="10" max="500" oninput="updateLabel()" style="margin-top:2px; padding: 5px 8px;">
+                </div>
+            </div>
+            <div style="margin-top: 10px; display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" id="checkAutoHeight" style="width: auto; height: auto;" onchange="toggleHeightInput()">
+                <label for="checkAutoHeight" style="margin-bottom: 0; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: #475569;">내용에 맞춰 세로 자동 확장</label>
+            </div>
+        </div>
         <div class="form-group">
             <label>브랜드명</label>
             <input type="text" id="inputBrand" value="Kitchen-Art" oninput="updateLabel()">
@@ -384,7 +405,26 @@
 </div>
 
 <script>
+    function toggleHeightInput() {
+        const autoHeight = document.getElementById('checkAutoHeight').checked;
+        const heightInput = document.getElementById('inputHeight');
+        heightInput.disabled = autoHeight;
+        updateLabel();
+    }
+
     function updateLabel() {
+        // 라벨 규격 설정 반영
+        const width = document.getElementById('inputWidth').value || 100;
+        const height = document.getElementById('inputHeight').value || 120;
+        const autoHeight = document.getElementById('checkAutoHeight').checked;
+        
+        document.documentElement.style.setProperty('--label-width', `${width}mm`);
+        if (autoHeight) {
+            document.documentElement.style.setProperty('--label-height', 'auto');
+        } else {
+            document.documentElement.style.setProperty('--label-height', `${height}mm`);
+        }
+
         // 기본 텍스트 및 초기화
         const brandInput = document.getElementById('inputBrand').value;
         const titleInput = document.getElementById('inputTitle').value;
@@ -416,7 +456,7 @@
             }
             infoContainer.appendChild(div);
 
-            // [개행 방지] 너비 초과 시 폰트 크기 자동 축소 (Transform 대신 FontSize 사용)
+            // [개행 방지] 너비 초과 시 폰트 크기 자동 축소
             const maxWidth = infoContainer.offsetWidth;
             let currentSize = 2.85;
             while (div.scrollWidth > maxWidth && currentSize > 1.2) {
@@ -425,7 +465,7 @@
             }
         });
 
-        // 브랜드 로고 크기 자동 최적화 (Transform 대신 FontSize 사용 - PDF 안정성용)
+        // 브랜드 로고 크기 자동 최적화
         const brandSide = brandEl.parentElement;
         const brandMaxWidth = brandSide.offsetWidth;
         let currentBrandSize = 14;
@@ -455,8 +495,8 @@
         if (barcodeValue) {
             try {
                 JsBarcode("#barcode", barcodeValue, {
-                    format: "CODE128", // 어떤 데이터도 수용 가능한 범용 규격 적용
-                    width: 2.1,
+                    format: "CODE128", 
+                    width: parseFloat(width) < 60 ? 1.5 : 2.1, // 폭에 따라 바코드 굵기 자동 조절
                     height: 50,
                     displayValue: false,
                     margin: 0,
@@ -479,16 +519,16 @@
             button.disabled = true;
             button.innerHTML = '<span>⏳</span> PDF 생성 중...';
 
-            // 폰트 및 리소스 렌더링 대기 시간 추가
             await document.fonts.ready;
             await new Promise(resolve => setTimeout(resolve, 500)); 
 
             const title = document.getElementById('inputTitle').value || 'label';
             const fileName = `${title}_barcode.pdf`;
 
-            // 실제 렌더링된 크기 확인 (mm 변환)
-            const widthMm = 100;
-            const heightMm = element.offsetHeight * 0.264583;
+            // 설정된 가로/세로 규격 가져오기
+            const widthMm = parseFloat(document.getElementById('inputWidth').value) || 100;
+            const autoHeight = document.getElementById('checkAutoHeight').checked;
+            const heightMm = autoHeight ? (element.offsetHeight * 0.264583) : (parseFloat(document.getElementById('inputHeight').value) || 120);
 
             const opt = {
                 margin: 0,
