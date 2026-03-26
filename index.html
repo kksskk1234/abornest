@@ -375,7 +375,19 @@
         </div>
 
         <div class="form-group">
-            <label>바코드 (숫자 및 영문 혼합 가능)</label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                <label style="margin-bottom: 0;">바코드 (숫자 및 영문 혼합 가능)</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">두께</span>
+                        <input type="number" id="barcodeThickness" value="2.0" step="0.1" min="1" max="5" oninput="updateLabel()" style="width: 45px; padding: 2px 5px; font-size: 0.7rem; border: 1px solid #cbd5e1; border-radius: 4px;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">높이(px)</span>
+                        <input type="number" id="barcodeHeight" value="80" step="5" min="20" max="200" oninput="updateLabel()" style="width: 45px; padding: 2px 5px; font-size: 0.7rem; border: 1px solid #cbd5e1; border-radius: 4px;">
+                    </div>
+                </div>
+            </div>
             <input type="text" id="inputBarcode" value="S2025090100401" oninput="updateLabel()">
             <div id="barcodeError" class="barcode-error">⚠ 올바른 형식이 아닙니다.</div>
         </div>
@@ -416,7 +428,7 @@
             </div>
 
             <div class="label-footer">
-                <canvas id="barcode"></canvas>
+                <canvas id="barcode" style="max-width: 95%; height: auto !important; image-rendering: pixelated;"></canvas>
                 <div class="barcode-text" id="barcodeText">S2025090100401</div>
             </div>
         </div>
@@ -525,12 +537,15 @@
 
         if (barcodeValue) {
             try {
+                const barWidth = document.getElementById('barcodeThickness').value || 2.2;
+                const barHeight = document.getElementById('barcodeHeight').value || 80;
+
                 JsBarcode("#barcode", barcodeValue, {
                     format: "CODE128", 
-                    width: parseFloat(width) < 60 ? 1.5 : 2.1, // 폭에 따라 바코드 굵기 자동 조절
-                    height: 50,
+                    width: parseFloat(barWidth), 
+                    height: parseFloat(barHeight),
                     displayValue: false,
-                    margin: 0,
+                    margin: 30, // 선명도 및 인식률을 위해 여백 대폭 상향
                     background: "#ffffff"
                 });
             } catch (e) {
