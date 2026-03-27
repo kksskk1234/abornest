@@ -130,14 +130,34 @@
         /* 오른쪽 미리보기 영역 */
         .preview {
             flex: 1;
+            background: #f1f5f9;
+            background-image: 
+                radial-gradient(#cbd5e1 1px, transparent 1px),
+                radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
-            background-color: #cbd5e1;
-            background-image: radial-gradient(#94a3b8 1px, transparent 1px);
-            background-size: 20px 20px;
+            padding: 40px;
             overflow: auto;
+            position: relative;
+        }
+
+        .zoom-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            z-index: 100;
+            pointer-events: none;
         }
 
         /* [사진 기반 완벽 재현] 세로형 라벨 디자인 */
@@ -145,15 +165,17 @@
             width: var(--label-width);
             height: var(--label-height);
             background: white;
-            padding: 2mm 4mm; 
+            padding: 2mm 2mm; 
             box-shadow: 0 30px 60px rgba(0,0,0,0.15);
             position: relative;
             display: flex;
             flex-direction: column;
-            gap: 1.5mm; /* 항목 간 간격 균일화 */
+            gap: 1.5mm; 
             color: #000;
             overflow: hidden;
             justify-content: flex-start;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center center;
         }
 
 
@@ -268,6 +290,7 @@
             height: auto !important;
             display: block !important;
             margin: 0 auto !important;
+            image-rendering: pixelated; /* 바코드 막대 선명도 강제 (안티앨리어싱 방지) */
         }
 
         .barcode-text {
@@ -442,6 +465,7 @@
                 <div class="barcode-text" id="barcodeText">S2025090100401</div>
             </div>
         </div>
+        <div class="zoom-badge" id="zoomBadge">100%</div>
     </div>
 </div>
 
@@ -485,8 +509,9 @@
             document.getElementById('fontSizeInfo').value = (2.85 * scale).toFixed(2);
             document.getElementById('fontSizeCaution').value = (2.8 * scale).toFixed(2);
 
-            // 바코드 두께 자동 조절 추가 (기준 1.8 -> 라벨 폭에 비해 10% 여유 마진 확보)
-            document.getElementById('barcodeThickness').value = (1.8 * (width / 100)).toFixed(1);
+            // 바코드 두께 자동 조절 추가 (기준 2.2 -> 최소 1.0px 확보하여 인식률 개선)
+            const thickness = Math.max(1.0, 2.2 * (width / 100)).toFixed(1);
+            document.getElementById('barcodeThickness').value = thickness;
         }
 
         // 글꼴 크기 설정 읽기
@@ -576,7 +601,7 @@
                     width: parseFloat(barWidth), 
                     height: parseFloat(barHeight),
                     displayValue: false,
-                    margin: 0, // 상하좌우 내부 여백 제거 (라벨 패딩 4mm가 쿼이어트 존 역할 수행)
+                    margin: 10, // 인식률을 위해 최소 10px의 내부 쿼이어트 존 확보
                     background: "#ffffff"
                 });
             } catch (e) {
@@ -649,7 +674,27 @@
         }
     }
 
-    window.onload = toggleHeightInput;
+    // 미리보기 확대/축소 기능
+    let currentZoom = 1.0;
+    const previewArea = document.querySelector('.preview');
+    const zoomBadge = document.getElementById('zoomBadge');
+    const labelContainer = document.getElementById('printableLabel');
+
+    previewArea.addEventListener('wheel', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            currentZoom = Math.min(Math.max(0.2, currentZoom + delta), 5.0);
+            
+            labelContainer.style.transform = `scale(${currentZoom})`;
+            zoomBadge.innerText = `${Math.round(currentZoom * 100)}%`;
+        }
+    }, { passive: false });
+
+    window.onload = function() {
+        toggleHeightInput();
+        updateLabel(); // Ensure label is updated on load
+    };
 </script>
 
 </body>
