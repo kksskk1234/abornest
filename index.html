@@ -143,28 +143,20 @@
         /* [사진 기반 완벽 재현] 세로형 라벨 디자인 */
         .label-container {
             width: var(--label-width);
-            min-height: var(--label-height);
+            height: var(--label-height);
             background: white;
-            padding: 10mm 8mm; 
+            padding: 2mm 4mm; 
             box-shadow: 0 30px 60px rgba(0,0,0,0.15);
             position: relative;
             display: flex;
             flex-direction: column;
+            gap: 1.5mm; /* 항목 간 간격 균일화 */
             color: #000;
+            overflow: hidden;
+            justify-content: flex-start;
         }
 
-        .label-header {
-            margin-bottom: 6mm;
-        }
 
-        .label-title {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 5.1mm; /* 사진과 유사하게 시원하게 */
-            font-weight: 900;
-            word-break: keep-all;
-            line-height: 1.1;
-            letter-spacing: -0.2mm;
-        }
 
         /* 브랜드 로고 (최상단 중앙 배치) */
         .label-brand-side {
@@ -172,8 +164,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 6mm;
-            padding-top: 2mm;
+            margin: 0;
         }
 
         .label-brand {
@@ -187,7 +178,7 @@
         }
 
         .label-header {
-            margin-bottom: 6mm;
+            margin: 0;
         }
 
         .label-title {
@@ -201,8 +192,8 @@
 
         .label-middle {
             display: flex;
-            flex-direction: column; /* 단일 컬럼으로 변경하여 가로 최대 활용 */
-            margin-bottom: 4mm;
+            flex-direction: column;
+            margin: 0;
         }
 
         .label-info-side {
@@ -232,7 +223,7 @@
 
         /* 주의사항 영역 */
         .caution-section {
-            margin: 6mm 0;
+            margin: 0;
         }
 
         .caution-title {
@@ -265,25 +256,28 @@
 
         /* 하단 바코드 영역 */
         .label-footer {
-            margin-top: auto;
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            padding-top: 5mm;
         }
 
         #barcode {
-            width: 95mm !important;
-            height: 20mm !important;
+            max-width: 100%;
+            height: auto !important;
+            display: block !important;
+            margin: 0 auto !important;
         }
 
         .barcode-text {
             font-family: 'Inter', sans-serif;
             font-size: 4mm;
             font-weight: 700;
-            margin-top: 1.5mm;
+            margin-top: 0.5mm;
             letter-spacing: 0.5mm;
+            text-align: center !important;
+            width: 100% !important;
         }
 
         /* 프린트 스타일 */
@@ -315,15 +309,23 @@
                     <input type="number" id="inputHeight" value="150" min="10" max="500" oninput="updateLabel()" style="margin-top:2px; padding: 5px 8px;">
                 </div>
             </div>
-            <div style="margin-top: 10px; display: flex; align-items: center; gap: 6px;">
-                <input type="checkbox" id="checkAutoHeight" style="width: auto; height: auto;" onchange="toggleHeightInput()" checked>
-                <label for="checkAutoHeight" style="margin-bottom: 0; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: #475569;">내용에 맞춰 세로 자동 확장</label>
+            <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <input type="checkbox" id="checkAutoHeight" style="width: auto; height: auto;" onchange="toggleHeightInput()" checked>
+                    <label for="checkAutoHeight" style="margin-bottom: 0; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: #475569;">내용에 맞춰 세로 자동 확장</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <input type="checkbox" id="checkAutoFontSize" style="width: auto; height: auto;" onchange="updateLabel()" checked>
+                    <label for="checkAutoFontSize" style="margin-bottom: 0; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: #2563eb;">라벨 크기에 맞춰 글자 크기 자동 조절</label>
+                </div>
             </div>
         </div>
 
         <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                <label style="margin-bottom: 0;">브랜드명 (Logo)</label>
+                <label style="margin-bottom: 0; display: flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" id="showBrand" checked onchange="updateLabel()" style="width: auto; height: auto;"> 브랜드명 (Logo)
+                </label>
                 <div style="display: flex; align-items: center; gap: 4px;">
                     <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">크기(mm)</span>
                     <input type="number" id="fontSizeBrand" value="14" step="0.5" min="2" max="50" oninput="updateLabel()" style="width: 50px; padding: 2px 5px; font-size: 0.7rem; border: 1px solid #cbd5e1; border-radius: 4px;">
@@ -334,7 +336,9 @@
 
         <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                <label style="margin-bottom: 0;">제품명 (Title)</label>
+                <label style="margin-bottom: 0; display: flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" id="showTitle" checked onchange="updateLabel()" style="width: auto; height: auto;"> 제품명 (Title)
+                </label>
                 <div style="display: flex; align-items: center; gap: 4px;">
                     <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">크기(mm)</span>
                     <input type="number" id="fontSizeTitle" value="5.1" step="0.1" min="1" max="20" oninput="updateLabel()" style="width: 50px; padding: 2px 5px; font-size: 0.7rem; border: 1px solid #cbd5e1; border-radius: 4px;">
@@ -345,7 +349,9 @@
 
         <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                <label style="margin-bottom: 0;">품질표시사항 (항목:내용 형식)</label>
+                <label style="margin-bottom: 0; display: flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" id="showInfo" checked onchange="updateLabel()" style="width: auto; height: auto;"> 품질표시사항 (항목:내용 형식)
+                </label>
                 <div style="display: flex; align-items: center; gap: 4px;">
                     <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">크기(mm)</span>
                     <input type="number" id="fontSizeInfo" value="2.85" step="0.05" min="1" max="10" oninput="updateLabel()" style="width: 50px; padding: 2px 5px; font-size: 0.7rem; border: 1px solid #cbd5e1; border-radius: 4px;">
@@ -363,7 +369,9 @@
 
         <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                <label style="margin-bottom: 0;">주의사항 (한 줄에 하나씩)</label>
+                <label style="margin-bottom: 0; display: flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" id="showCaution" checked onchange="updateLabel()" style="width: auto; height: auto;"> 주의사항 (한 줄에 하나씩)
+                </label>
                 <div style="display: flex; align-items: center; gap: 4px;">
                     <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">크기(mm)</span>
                     <input type="number" id="fontSizeCaution" value="2.8" step="0.05" min="1" max="10" oninput="updateLabel()" style="width: 50px; padding: 2px 5px; font-size: 0.7rem; border: 1px solid #cbd5e1; border-radius: 4px;">
@@ -376,7 +384,9 @@
 
         <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                <label style="margin-bottom: 0;">바코드 (숫자 및 영문 혼합 가능)</label>
+                <label style="margin-bottom: 0; display: flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" id="showBarcode" checked onchange="updateLabel()" style="width: auto; height: auto;"> 바코드 (숫자 및 영문 혼합 가능)
+                </label>
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <span style="font-size: 0.65rem; color: #64748b; font-weight: 700;">두께</span>
@@ -456,6 +466,27 @@
             document.documentElement.style.setProperty('--label-height', 'auto');
         } else {
             document.documentElement.style.setProperty('--label-height', `${height}mm`);
+        }
+
+        // 항목별 표시 여부 제어
+        document.querySelector('.label-brand-side').style.display = document.getElementById('showBrand').checked ? 'block' : 'none';
+        document.querySelector('.label-header').style.display = document.getElementById('showTitle').checked ? 'block' : 'none';
+        document.querySelector('.label-middle').style.display = document.getElementById('showInfo').checked ? 'block' : 'none';
+        document.querySelector('.caution-section').style.display = document.getElementById('showCaution').checked ? 'block' : 'none';
+        document.querySelector('.label-footer').style.display = document.getElementById('showBarcode').checked ? 'block' : 'none';
+
+        // 라벨 크기에 따른 폰트 크기 자동 스케일링
+        if (document.getElementById('checkAutoFontSize').checked) {
+            const scale = Math.min(width / 100, height / 150);
+            
+            // 기준값에 비례하여 입력 필드 업데이트
+            document.getElementById('fontSizeBrand').value = (14 * scale).toFixed(1);
+            document.getElementById('fontSizeTitle').value = (5.1 * scale).toFixed(1);
+            document.getElementById('fontSizeInfo').value = (2.85 * scale).toFixed(2);
+            document.getElementById('fontSizeCaution').value = (2.8 * scale).toFixed(2);
+
+            // 바코드 두께 자동 조절 추가 (기준 1.8 -> 라벨 폭에 비해 10% 여유 마진 확보)
+            document.getElementById('barcodeThickness').value = (1.8 * (width / 100)).toFixed(1);
         }
 
         // 글꼴 크기 설정 읽기
@@ -545,7 +576,7 @@
                     width: parseFloat(barWidth), 
                     height: parseFloat(barHeight),
                     displayValue: false,
-                    margin: 30, // 선명도 및 인식률을 위해 여백 대폭 상향
+                    margin: 0, // 상하좌우 내부 여백 제거 (라벨 패딩 4mm가 쿼이어트 존 역할 수행)
                     background: "#ffffff"
                 });
             } catch (e) {
@@ -595,12 +626,14 @@
                     useCORS: true,
                     allowTaint: false,
                     letterRendering: true,
-                    logging: false
+                    logging: false,
+                    width: element.offsetWidth,
+                    height: element.offsetHeight
                 },
                 jsPDF: {
                     unit: 'mm',
                     format: [widthMm, heightMm],
-                    orientation: 'portrait',
+                    orientation: widthMm > heightMm ? 'l' : 'p', // 가로/세로 오리엔테이션 자동 전환
                     compress: true
                 }
             };
