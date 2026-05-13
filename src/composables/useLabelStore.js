@@ -27,6 +27,13 @@ const store = reactive({
   showCaution: true,
   showBarcode: true,
 
+  // 각 항목 패딩 (mm) — top/right/bottom/left
+  paddingBrand: { top: 2, right: 0, bottom: 6, left: 0 },
+  paddingTitle: { top: 0, right: 0, bottom: 6, left: 0 },
+  paddingInfo: { top: 0, right: 0, bottom: 4, left: 0 },
+  paddingCaution: { top: 6, right: 0, bottom: 6, left: 0 },
+  paddingBarcode: { top: 5, right: 0, bottom: 0, left: 0 },
+
   // 파생 값 (getter — Vue reactive proxy가 this를 통해 의존성 추적)
   get labelContainerStyle() {
     return {
@@ -64,4 +71,8 @@ const store = reactive({
 
 export function useLabelStore() {
   return store
+}
+
+export function padStyle(p) {
+  return { padding: `${p.top}mm ${p.right}mm ${p.bottom}mm ${p.left}mm` }
 }

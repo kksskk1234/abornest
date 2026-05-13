@@ -7,6 +7,7 @@
       v-model="store.brand"
       v-model:fontSize="store.fontSizeBrand"
       v-model:show="store.showBrand"
+      v-model:padding="store.paddingBrand"
       :font-size-step="0.5" :font-size-min="2" :font-size-max="50"
     />
     <FontField
@@ -14,6 +15,7 @@
       v-model="store.title"
       v-model:fontSize="store.fontSizeTitle"
       v-model:show="store.showTitle"
+      v-model:padding="store.paddingTitle"
       :font-size-step="0.1" :font-size-min="1" :font-size-max="20"
     />
     <FontField
@@ -21,6 +23,7 @@
       v-model="store.infoText"
       v-model:fontSize="store.fontSizeInfo"
       v-model:show="store.showInfo"
+      v-model:padding="store.paddingInfo"
       :font-size-step="0.05" :font-size-min="1" :font-size-max="10"
       multiline :rows="8"
     />

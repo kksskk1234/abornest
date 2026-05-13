@@ -1,5 +1,5 @@
 <template>
-  <div class="label-footer">
+  <div class="label-footer" :style="padStyle(store.paddingBarcode)">
     <canvas ref="barcodeRef" style="max-width: 95%; height: auto !important; image-rendering: pixelated"></canvas>
     <div class="barcode-text">{{ store.barcodeValue }}</div>
   </div>
@@ -8,7 +8,7 @@
 <script setup>
 import { ref, watch, nextTick, onMounted } from 'vue'
 import JsBarcode from 'jsbarcode'
-import { useLabelStore } from '../../composables/useLabelStore'
+import { useLabelStore, padStyle } from '../../composables/useLabelStore'
 
 const store = useLabelStore()
 const barcodeRef = ref(null)

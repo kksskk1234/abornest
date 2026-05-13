@@ -11,16 +11,27 @@
         />
       </div>
       <div class="font-size-control">
+        <button
+          type="button"
+          class="padding-toggle"
+          :class="{ active: showPadding }"
+          @click="showPadding = !showPadding"
+          title="패딩 조절"
+        >⚙ 패딩 {{ showPadding ? '▴' : '▾' }}</button>
         <span class="size-hint">크기(mm)</span>
         <input type="number" v-model.number="store.fontSizeCaution" step="0.05" min="1" max="10" class="small-input" />
       </div>
     </div>
+    <PaddingControls v-if="showPadding" v-model="store.paddingCaution" />
     <textarea v-model="store.cautionText" rows="5" placeholder="한 줄에 하나씩 입력"></textarea>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useLabelStore } from '../../composables/useLabelStore'
+import PaddingControls from './PaddingControls.vue'
 
 const store = useLabelStore()
+const showPadding = ref(false)
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="label-middle">
+  <div class="label-middle" :style="padStyle(store.paddingInfo)">
     <div class="label-info-side" ref="infoContainerRef">
       <div
         v-for="(line, i) in store.parsedInfoLines"
@@ -16,7 +16,7 @@
 
 <script setup>
 import { ref, watch, nextTick, onMounted } from 'vue'
-import { useLabelStore } from '../../composables/useLabelStore'
+import { useLabelStore, padStyle } from '../../composables/useLabelStore'
 
 const store = useLabelStore()
 const infoContainerRef = ref(null)

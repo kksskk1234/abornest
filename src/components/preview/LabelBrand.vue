@@ -1,5 +1,5 @@
 <template>
-  <div class="label-brand-side">
+  <div class="label-brand-side" :style="padStyle(store.paddingBrand)">
     <div class="label-brand" ref="brandRef" :style="{ fontSize: store.fontSizeBrand + 'mm' }">
       {{ store.brand }}
     </div>
@@ -8,7 +8,7 @@
 
 <script setup>
 import { ref, watch, nextTick, onMounted } from 'vue'
-import { useLabelStore } from '../../composables/useLabelStore'
+import { useLabelStore, padStyle } from '../../composables/useLabelStore'
 
 const store = useLabelStore()
 const brandRef = ref(null)
