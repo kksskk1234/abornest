@@ -1,11 +1,13 @@
 <template>
   <div class="preview">
     <div class="label-container" ref="labelRef" :style="store.labelContainerStyle">
-      <LabelBrand v-if="store.showBrand" />
-      <LabelTitle v-if="store.showTitle" />
-      <LabelInfoList v-if="store.showInfo" />
-      <LabelCaution v-if="store.showCaution" />
-      <LabelBarcode v-if="store.showBarcode" />
+      <div class="label-inner" :style="store.labelInnerStyle">
+        <LabelBrand v-if="store.showBrand" />
+        <LabelTitle v-if="store.showTitle" />
+        <LabelInfoList v-if="store.showInfo" />
+        <LabelCaution v-if="store.showCaution" />
+        <LabelBarcode v-if="store.showBarcode" />
+      </div>
     </div>
   </div>
 </template>

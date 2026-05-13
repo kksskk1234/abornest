@@ -31,8 +31,17 @@ const store = reactive({
   get labelContainerStyle() {
     return {
       width: `${this.labelWidth}mm`,
-      minHeight: this.autoHeight ? 'auto' : `${this.labelHeight}mm`,
+      height: this.autoHeight ? 'auto' : `${this.labelHeight}mm`,
+      minWidth: 0,
+      minHeight: 0,
+      overflow: this.autoHeight ? 'visible' : 'hidden',
     }
+  },
+  get labelInnerStyle() {
+    const w = this.labelWidth
+    const padH = Math.min(8, w * 0.08)
+    const padV = Math.min(10, w * 0.1)
+    return { padding: `${padV}mm ${padH}mm` }
   },
   get parsedInfoLines() {
     return this.infoText
