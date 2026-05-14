@@ -55,6 +55,7 @@ async function exportPDF() {
     const fileName = `${store.title || 'label'}_barcode.pdf`
     const widthMm = store.labelWidth
     const heightMm = store.autoHeight ? element.offsetHeight * 0.264583 : store.labelHeight
+    const orientation = widthMm > heightMm ? 'landscape' : 'portrait'
 
     await html2pdf()
       .set({
@@ -62,7 +63,7 @@ async function exportPDF() {
         filename: fileName,
         image: { type: 'jpeg', quality: 1.0 },
         html2canvas: { scale: 3, useCORS: true, allowTaint: false, letterRendering: true, logging: false },
-        jsPDF: { unit: 'mm', format: [widthMm, heightMm], orientation: 'portrait', compress: true },
+        jsPDF: { unit: 'mm', format: [widthMm, heightMm], orientation, compress: true },
       })
       .from(element)
       .save()
