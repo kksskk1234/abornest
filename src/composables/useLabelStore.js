@@ -11,7 +11,7 @@ const store = reactive({
   fontSizeCaution: 2.8,
   brand: '',
   title: '',
-  infoText: '',
+  infoText: '입고상품명 :\n구성 :\n용도: \n재질 : \n제조국 : \n수입 및 판매원 : \n소비자상담실 :',
   cautionTitle: '',
   cautionText: '',
   barcodeValue: '',

@@ -1,7 +1,7 @@
 <template>
   <div class="form-group" :class="{ 'field-disabled': show === false }">
     <div class="field-header">
-      <div class="field-label-group">
+      <label class="field-label-group" style="cursor: pointer; margin-bottom: 0">
         <input
           v-if="show !== undefined"
           type="checkbox"
@@ -9,8 +9,8 @@
           @change="$emit('update:show', $event.target.checked)"
           class="show-checkbox"
         />
-        <label style="margin-bottom: 0">{{ label }}</label>
-      </div>
+        <span>{{ label }}</span>
+      </label>
       <div class="font-size-control">
         <button
           v-if="padding"

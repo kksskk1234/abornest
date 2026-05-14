@@ -1,10 +1,10 @@
 <template>
   <div class="form-group" :class="{ 'field-disabled': !store.showBarcode }">
     <div class="field-header">
-      <div class="field-label-group">
+      <label class="field-label-group" style="cursor: pointer; margin-bottom: 0">
         <input type="checkbox" v-model="store.showBarcode" class="show-checkbox" />
-        <label style="margin-bottom: 0">바코드 (숫자 및 영문 혼합 가능)</label>
-      </div>
+        <span>바코드 (숫자 및 영문 혼합 가능)</span>
+      </label>
       <div class="font-size-control" style="gap: 8px">
         <button
           type="button"
