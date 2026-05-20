@@ -17,6 +17,8 @@ const store = reactive({
   barcodeValue: '',
   barcodeThickness: 2.0,
   barcodeHeightVal: 80,
+  barcodeTextSize: 4,
+  showBarcodeText: true,
   barcodeError: false,
   pdfLoading: false,
 

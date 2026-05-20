@@ -1,7 +1,11 @@
 <template>
   <div class="label-footer" :style="padStyle(store.paddingBarcode)">
     <canvas ref="barcodeRef" style="max-width: 95%; height: auto !important; image-rendering: pixelated"></canvas>
-    <div class="barcode-text">{{ store.barcodeValue }}</div>
+    <div
+      v-if="store.showBarcodeText"
+      class="barcode-text"
+      :style="{ fontSize: store.barcodeTextSize + 'mm' }"
+    >{{ store.barcodeValue }}</div>
   </div>
 </template>
 

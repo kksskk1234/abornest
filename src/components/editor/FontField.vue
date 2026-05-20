@@ -1,7 +1,7 @@
 <template>
   <div class="form-group" :class="{ 'field-disabled': show === false }">
     <div class="field-header">
-      <label class="field-label-group" style="cursor: pointer; margin-bottom: 0">
+      <label class="field-label-group" style="cursor: pointer; margin-bottom: 0; display: flex; align-items: center">
         <input
           v-if="show !== undefined"
           type="checkbox"
@@ -9,7 +9,7 @@
           @change="$emit('update:show', $event.target.checked)"
           class="show-checkbox"
         />
-        <span>{{ label }}</span>
+        <span :title="labelTooltip">{{ labelBase }}</span>
       </label>
       <div class="font-size-control">
         <button
@@ -53,10 +53,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import PaddingControls from './PaddingControls.vue'
 
-defineProps({
+const props = defineProps({
   label: String,
   modelValue: String,
   fontSize: Number,
@@ -72,4 +72,10 @@ defineProps({
 defineEmits(['update:modelValue', 'update:fontSize', 'update:show', 'update:padding'])
 
 const showPadding = ref(false)
+
+const labelBase = computed(() => (props.label || '').replace(/\s*\([^)]*\)\s*$/, '').trim())
+const labelTooltip = computed(() => {
+  const m = (props.label || '').match(/\(([^)]*)\)\s*$/)
+  return m ? m[1] : ''
+})
 </script>
